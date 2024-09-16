@@ -164,16 +164,43 @@
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
+      <img src="static/images/figure_1_ours.pdf" alt="Figure_1">
       <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
-        free-viewpoint
-        portraits.
+        The BERDS benchmark consists of subjective questions and diverse perspectives associated with the questions.
       </h2>
     </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Paper Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We study retrieving a set of documents that covers various perspectives on a complex and contentious question 
+            (e.g., would ChatGPT do more harm than good?). First, we curate a <b>Be</b>>nchmark for <b>R</b>>etrieval 
+            <b>D</b>>iversity for <b>S</b>ubjective questions (<b>BERDS</b>), where each example consists of a question and 
+            diverse perspectives associated with the question, sourced from survey questions and debate websites. This task 
+            diverges from most retrieval tasks where document relevancy can be evaluated with simple string matches to 
+            reference answers. To evaluate the performance of retrievers on this task, we build an automatic evaluator that 
+            decides whether each retrieved document contains a perspective. Our experiments show that existing retrievers 
+            struggle to surface diverse perspectives. Re-ranking and query expansion approaches encourage retrieval diversity 
+            and achieve substantial gains to base performances. Yet, retrieving diverse documents from a large, web-scale 
+            corpus remains challenging, as existing retrievers could only cover all the perspectives with the top 5 documents 
+            30% of the time. Our work presents benchmark datasets and an evaluation framework, laying the foundation for 
+            future studies in retrieval diversity handling complex queries. 
+          </p>
+          <p>
+          </p>
+          <p>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
   </div>
 </section>
 
