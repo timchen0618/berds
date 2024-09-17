@@ -63,6 +63,7 @@ More on this soon.
 ## Evaluate Retrieval Outputs
 ### Expected Format
 We expect the output to be in a jsonl file, with each line being a JSON object.  
+
 Each element should follow the format below: 
 ```
 {
@@ -82,5 +83,21 @@ Each element should follow the format below:
 ```
 
 For the ease of inspection, you could simply add the `ctxs` field to the original input jsonl file.  
+Each element in the `ctxs` should contain the `text` field. The `title` field is optional.  
+
 ### Commands
+Run 
+```shell
+cd eval/
+PYTHONPATH=.. torchrun --nproc_per_node 1 --master-port [port] eval.py \
+                --data [path_to_retrieval_outputs] \
+                --output_file [path_to_eval_results]   \
+                --instructions instructions.txt \
+                --model [path/to/evaluator/model]  \
+                --model_type mistral \
+                --topk [k]
+```
+
+See `run_eval.sh` for an example. 
+In `run_eval.sh`, the outputs are saved to files named `[dataset].jsonl`.  
 
