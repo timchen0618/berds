@@ -14,7 +14,7 @@ You can find the data and model [here](https://huggingface.co/collections/timche
 
 #### Download Data
 You can load the data from huggingface, and later save it if needed.  
-```
+```python
 from datasets import load_dataset
 
 arguana_ds = load_dataset("timchen0618/Arguana")
@@ -25,7 +25,7 @@ opinionqa_ds = load_dataset("timchen0618/OpinionQA")
 
 #### Load Model
 You can load the model from huggingface, with the `peft` and `transformers` libraries.  
-```
+```python
 from peft import PeftModel, PeftConfig
 from transformers import AutoModelForCausalLM
 
@@ -38,11 +38,15 @@ model = PeftModel.from_pretrained(base_model, "timchen0618/Mistral_BERDS_evaluat
 ## Perspective Detection
 Given a documents and a perspective, **perspective detection** is defined as "identifying whether the document supports or implies the perspective".  
 A perspective detection model is an essential component of the automatic evaluation.  
+
 More details on this can be found [here](perspective_detection/README.md). 
 
 
 ## Reproduction
+More on this soon. 
 
 ## Evaluate Retrieval Outputs
+### Expected Format
 
+### Commands
 
