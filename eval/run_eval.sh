@@ -20,8 +20,7 @@ do
                 --instructions instructions_chat.txt \
                 --model ${MODEL_NAME}  \
                 --model_type ${MODEL_SHORT} \
-                --topk ${TOPK} \
-                --test_data_only
+                --topk ${TOPK} 
     done 
 done
         
