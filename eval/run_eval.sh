@@ -17,10 +17,11 @@ do
         PYTHONPATH=.. torchrun --nproc_per_node 1 --master-port ${PORT} eval.py \
                 --data ${ROOT}/${DATA} \
                 --output_file ${OUTPUT}   \
-                --instructions instructions.txt \
+                --instructions instructions_chat.txt \
                 --model ${MODEL_NAME}  \
                 --model_type ${MODEL_SHORT} \
-                --topk ${TOPK}
+                --topk ${TOPK} \
+                --test_data_only
     done 
 done
         

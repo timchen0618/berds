@@ -1,9 +1,8 @@
-from llama import Llama, Dialog
 import torch
 
 def load_model(args, device, logger):
     from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModelForCausalLM
-    from peft import AutoPeftModelForCausalLM
+    from peft import AutoPeftModelForCausalLM, PeftModel, PeftConfig
     from transformers import pipeline
     
     if args.model == 'google/t5_xxl_true_nli_mixture':
@@ -13,7 +12,7 @@ def load_model(args, device, logger):
         model.to(device)
         return model, tokenizer
     elif args.model.find('Mistral') != -1:
-        if args.model.find('saved') != -1:
+        if args.model.find('saved') != -1 or args.model.find('timchen0618') != -1:
             model = AutoPeftModelForCausalLM.from_pretrained(args.model)
         else:
             model = AutoModelForCausalLM.from_pretrained(args.model)
@@ -38,6 +37,7 @@ def load_model(args, device, logger):
         model.to(device)
         return model, tokenizer
     elif args.model.find('llama') != -1:
+        from llama import Llama, Dialog
         import yaml
         with open(args.llama_config, "r") as stream:
             try:

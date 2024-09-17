@@ -1,7 +1,6 @@
-accelerate==0.28.0.dev0
+accelerate==0.28.0
 Cython==3.0.10
 datasets==2.17.0
-en-core-web-sm==3.5.0
 faiss-gpu==1.7.2
 json-lines==0.5.0
 nltk==3.8.1
@@ -21,13 +20,13 @@ regex==2023.5.5
 requests==2.31.0
 scikit-learn==1.2.2
 scipy==1.10.1
-sentence-transformers2.2.2
+sentence-transformers==2.2.2
 sentencepiece==0.1.99
 spacy==3.5.3
 tokenizers==0.15.2
-torch==2.2.0+cu118
-torchaudio==2.2.0+cu118
-torchvision==0.17.0+cu118
+torch==2.2.0
+torchaudio==2.2.0
+torchvision==0.17.0
 tqdm==4.65.0
 transformers==4.38.1
 triton==2.2.0
