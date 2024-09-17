@@ -36,6 +36,10 @@ model = PeftModel.from_pretrained(base_model, "timchen0618/Mistral_BERDS_evaluat
 
 
 ## Perspective Detection
+Given a documents and a perspective, **perspective detection** is defined as "identifying whether the document supports or implies the perspective".  
+A perspective detection model is an essential component of the automatic evaluation.  
+More details on this can be found [here](perspective_detection/README.md). 
+
 
 ## Reproduction
 
