@@ -4,6 +4,19 @@ This is the repository that contains source code for the [BERDS website](https:/
 
 
 ## Requirements 
+Tested on Python 3.8.  
+To use the repo, first clone the project. 
+```shell
+git clone git@github.com:timchen0618/berds.git
+```
+
+And create a virtual environment (recommended).  
+```shell
+cd berds/
+python3 -m venv berds
+source berds/bin/activate
+```
+
 ### Environment
 ```
 pip install -r requirments.txt
