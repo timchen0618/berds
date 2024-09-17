@@ -7,19 +7,20 @@ This is the repository that contains source code for the [BERDS website](https:/
 Tested on Python 3.8.  
 To use the repo, first clone the project. 
 ```shell
-$ git clone git@github.com:timchen0618/berds.git
+git clone git@github.com:timchen0618/berds.git
 ```
 
 And create a virtual environment (recommended).  
 ```shell
-$ cd berds/
-$ python3 -m venv berds
-$ source berds/bin/activate
+cd berds/
+python3 -m venv berds
+source berds/bin/activate
 ```
 
 ### Environment
+Install the required packages.  
 ```shell
-$ pip install -r requirments.txt
+pip install -r requirments.txt
 ```
 
 ### Data & Model
@@ -36,7 +37,8 @@ opinionqa_ds = load_dataset("timchen0618/OpinionQA")
 
 ```
 
-#### Load Model
+#### Load Evaluator Model
+To run evaluation on your own retrieval outputs, you need to download the evaluator model.  
 You can load the model from huggingface, with the `peft` and `transformers` libraries.  
 ```python
 from peft import PeftModel, PeftConfig
@@ -60,6 +62,25 @@ More on this soon.
 
 ## Evaluate Retrieval Outputs
 ### Expected Format
+We expect the output to be in a jsonl file, with each line being a JSON object.  
+Each element should follow the format below: 
+```
+{
+    "perspectives": [$$p_1$$, $$p_2$$, ...],
+    "ctxs": [
+        {
+            "title": [title1],
+            "text": [retrieved_document1]
+        },
+        {
+            "title": [title2],
+            "text": [retrieved_document2]
+        },
+        ...
+    ]
+}
+```
 
+For the ease of inspection, you could simply add the `ctxs` field to the original input jsonl file.  
 ### Commands
 
