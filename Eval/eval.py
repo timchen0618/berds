@@ -110,7 +110,13 @@ def main(args):
         
         # prepare data
         data = read_jsonl(args.data)
-
+        
+        if args.data.find('arguana_generated') != -1:
+            data = data[:750]
+        elif args.data.find('kialo') != -1:
+            data = data[:774]
+        elif args.data.find('opinionqa') != -1:
+            data = data[:882]
         for inst in tqdm(data):
             pred_inst = []  # (num_perspectives, num_docs)
             # retrieving perspectives

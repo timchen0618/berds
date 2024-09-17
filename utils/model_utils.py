@@ -14,6 +14,11 @@ def load_model(args, device, logger):
     elif args.model.find('Mistral') != -1:
         if args.model.find('saved') != -1 or args.model.find('timchen0618') != -1:
             model = AutoPeftModelForCausalLM.from_pretrained(args.model)
+        elif args.model.find('timchen0618') != -1:
+            print('8'*50)
+            print('timchen0718')
+            base_model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2")
+            model = PeftModel.from_pretrained(base_model, args.model)
         else:
             model = AutoModelForCausalLM.from_pretrained(args.model)
         tokenizer = AutoTokenizer.from_pretrained(args.model)
