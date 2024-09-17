@@ -1,0 +1,3 @@
+Generate diverse perspectives that answer the given question. Please answer with a JSON object, where each field is a perspective. Do not generate similar perspectives; they should be distinct. The keys in the JSON object should be meaningful, and each word in the keys should be separated by whitespace. 
+
+Question: [Question]

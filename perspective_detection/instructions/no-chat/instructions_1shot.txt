@@ -1,0 +1,22 @@
+You are a helpful assistant that can only answer with "Yes" or "No". Your goal is to determine if the provided document support the provided statement. Do NOT provide any explanation for your choice. You should output the answer that best follows an instruction and two input pairs.
+
+Document for Example 1: Why Prop. 19 is so important | rescue truth. The United States took a stab at alcohol prohibition from 1920-1933 via the United States Constitution. Almost immediately following the ratification of the Eighteenth Amendment, which outlawed alcohol, speakeasy clubs sprung up all over, effectively creating a black market and handing alcohol sales over to organized crime. During this time, our government poisoned industrial alcohol in an attempt to curb usage by scaring the American public, causing an estimated 10,000 deaths.[17] Because of the illicit drug market created by prohibition, the government could not regulate the production of alcohol, and sometimes people became ill after drinking bootlegged whiskies. The current
+Statement for Example 1: Is prohibition an effective method to curb drug usage?
+Instruction for Example 1: Does the document support the statement? Answer with only "Yes" or "No". 
+Only consider the information provided in the document, and do not infer any additional information. 
+The document is a snippet taken from the Internet, and might exhibit support for or opposition against the statement.
+If the document opposes the statement, the answer is "No". If the document does not contain relevant information about the statement, the answer is also "No".
+The answer is "Yes" only if the document supports the statement, either explicitly or implicitly.
+Think carefully if the document actually supports the statement, or if there is just some superficial textual overlap between the two.
+Answer for Example 1:
+No
+
+Document: [Doc 1]
+Statement: [Doc 2]
+Instruction: Does the document support the statement? Answer with only "Yes" or "No". 
+Only consider the information provided in the document, and do not infer any additional information. 
+The document is a snippet taken from the Internet, and might exhibit support for or opposition against the statement.
+If the document opposes the statement, the answer is "No". If the document does not contain relevant information about the statement, the answer is also "No".
+The answer is "Yes" only if the document supports the statement, either explicitly or implicitly.
+Think carefully if the document actually supports the statement, or if there is just some superficial textual overlap between the two.
+Answer:
