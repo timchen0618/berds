@@ -66,7 +66,7 @@ We expect the output to be in a jsonl file, with each line being a JSON object.
 Each element should follow the format below: 
 ```
 {
-    "perspectives": [$$p_1$$, $$p_2$$, ...],
+    "perspectives": [p1, p2, ...],
     "ctxs": [
         {
             "title": [title1],
