@@ -221,7 +221,10 @@
         <div class="content">
           <h2 class="title is-3">Baseline Performances</h2>
           <p>
-            We evaluate the performance of existing retrievers on the BERDS benchmark. We use the following models as baselines: BM25, DPR, and Contriever.
+            We evaluate the performance of existing retrievers on the BERDS benchmark. 
+            We use the following models as baselines: BM25, DPR, and Contriever.
+            MRecall @ k measure the percentage of questions where all perspectives are covered by the top k retrieved documents.
+            Precision @ k measures the percentage of retrieved documents that contain a perspective.
           </p>
           <img src="static/images/baseline.png" alt="baseline" style="width: 100%;"/>
         </div>
