@@ -4,11 +4,11 @@ do
     IFS=","
     set -- ${corpus_and_retriever}
     echo "corpus: $1 | retriever: $2"
-    ROOT="/scratch/cluster/hungting/projects/Multi_Answer/Data/retrieval_outputs/${1}/${2}"
+    ROOT="/path/to/retrieval_outputs/${1}/${2}"
     PORT=29500
     TOPK=5
     
-    for DATA in "arguana_generated_1k.jsonl" "kialo_1k.jsonl" "opinionqa_1k.jsonl" 
+    for DATA in "arguana_generated.jsonl" "kialo.jsonl" "opinionqa.jsonl" 
     do
         MODEL_SHORT="mistral" 
         MODEL_NAME="timchen0618/Mistral_BERDS_evaluator"
