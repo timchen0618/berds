@@ -4,7 +4,6 @@ import openai
 from functools import partial
 from pathlib import Path
 import ast
-from transformers import pipeline
 
 class Prediction:
     def __init__(self, model_type, model, tokenizer, device, args):

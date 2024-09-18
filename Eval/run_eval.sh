@@ -5,16 +5,16 @@ do
     set -- ${corpus_and_retriever}
     echo "corpus: $1 | retriever: $2"
     ROOT="/scratch/cluster/hungting/projects/Multi_Answer/Data/retrieval_outputs/${1}/${2}"
-    PORT=29500
+    PORT=29600
     TOPK=5
     
     for DATA in "arguana_generated_1k.jsonl" "kialo_1k.jsonl" "opinionqa_1k.jsonl" 
     do
         MODEL_SHORT="mistral" 
-        MODEL_NAME="timchen0618/Mistral_BERDS_evaluator"
+        MODEL_NAME="/scratch/cluster/hungting/projects/Multi_Answer/Subtask_1/saved_models/Mistral_BERDS_evaluator_full"
         OUTPUT="${ROOT}/${DATA}.${MODEL_SHORT}pred"
 
-        PYTHONPATH=.. torchrun --nproc_per_node 1 --master-port ${PORT} eval.py \
+        PYTHONPATH=.. python eval_vllm.py \
                 --data ${ROOT}/${DATA} \
                 --output_file ${OUTPUT}   \
                 --instructions instructions_chat.txt \
