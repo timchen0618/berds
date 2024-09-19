@@ -2,3 +2,4 @@
 .idea
 retrieval_outputs/
 berds/
+.nfs*
