@@ -1,10 +1,10 @@
 #!/bin/bash
-for corpus_and_retriever in sphere,dpr
+for corpus_and_retriever in sphere,bm25
 do
     IFS=","
     set -- ${corpus_and_retriever}
     echo "corpus: $1 | retriever: $2"
-    ROOT="/scratch/cluster/hungting/projects/Multi_Answer/Data/retrieval_outputs/${1}/${2}"
+    ROOT="/path/to/retrieval_outputs/${1}/${2}"
     PORT=29500
     TOPK=5
     
