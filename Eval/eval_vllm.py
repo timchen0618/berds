@@ -7,6 +7,7 @@ from pathlib import Path
 import logging
 from tqdm import tqdm
 import argparse
+import ast
 
 import torch
 import transformers
@@ -22,15 +23,12 @@ logger = logging.getLogger(__name__)
 class Inferencer:
     def __init__(self, model_id, n_gpu, instruction):
         self.model_id = model_id
-        self.llm = LLM(model="mistralai/Mistral-7B-Instruct-v0.2",
+        self.llm = LLM(model=model_id,
                     tokenizer=self.model_id,
                     enable_prefix_caching=True,
                     trust_remote_code=True,
                     tensor_parallel_size=n_gpu,
                     gpu_memory_utilization=0.9)
-        from vllm.model_executor.adapters import lora
-        # Add LoRA adapter
-        lora.LoRAModel.from_pretrained(self.llm.llm_engine.workers[0].model, model_id)
         self.sampling_params = SamplingParams(temperature=0.0, max_tokens=16, seed=0)
         self.tokenizer = AutoTokenizer.from_pretrained(model_id)
         self.instruction = instruction
@@ -61,7 +59,7 @@ class Inferencer:
                     else:
                         doc_text = doc['text']   
                     
-                    input_texts.append(self.formulate_dialogs(p, doc_text))
+                    input_texts.append(self.formulate_dialogs(doc_text, p)[1:])
                     
         return input_texts
                         
@@ -72,6 +70,16 @@ class Inferencer:
         outputs = self.llm.generate(input_texts, self.sampling_params, use_tqdm=True)
         outputs = [output.outputs[0].text for output in outputs]
         return outputs
+    
+    def parse_response(self, response):
+        if response[0] != '{':
+            response = response.strip().strip('\n').split('Answer:')[-1].split('The answer is')[-1].split('The answer is \"')[-1].split('The answer is:')[-1].split('Based on the information provided in the document, the answer is')[-1].split('Based on the information provided in the document, the answer is:\n')[-1].strip()
+            response = response.strip().lower()
+            _yes = (response[:3] == 'yes' or response[:4] == '(yes') or (response == 'y' or response == 'ye') or (response[-3:] == 'yes' or response[-4:] == 'yes.' or response[-5:] == 'yes\".')
+            _entail_or_true = (response[:6] == 'entail' or (response[:4] == 'true'))
+            return  _yes or _entail_or_true
+        else:
+            return ast.literal_eval(response)['Answer'].strip().lower() == 'yes'
 
 def mrecall(preds):
     mrecalls = []
@@ -168,6 +176,9 @@ def main(args):
         inferencer, input_texts = prepare_predictor_and_inputs(args, data)
         logger.info('finish loading model, start inference...')
         outputs = inferencer.inference(input_texts)
+        # print(outputs)
+        outputs = [inferencer.parse_response(output) for output in outputs]
+        # print(outputs)
         
         
         for inst in tqdm(data):
