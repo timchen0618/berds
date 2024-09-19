@@ -1,5 +1,5 @@
 #!/bin/bash
-for corpus_and_retriever in sphere,bm25 
+for corpus_and_retriever in sphere,dpr
 do
     IFS=","
     set -- ${corpus_and_retriever}

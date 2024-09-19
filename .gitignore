@@ -2,4 +2,6 @@
 .idea
 retrieval_outputs/
 berds/
-.nfs*
+.nfs
+score.csv
+__pycache__/
