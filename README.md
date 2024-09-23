@@ -104,6 +104,6 @@ However, this will take 3~4 hours for a single dataset.
 We also support (vLLM)[https://github.com/vllm-project/vllm] inference to reduce evaluation time.  
 Simply replace `eval.py` in the commands with `eval_vllm.py`. All the arguments are the same.  
 
-See `run_eval.sh` for an example. 
+See `run_eval.sh` for an example.   
 In `run_eval.sh`, the outputs are saved to files named `[dataset].jsonl`.  
 
