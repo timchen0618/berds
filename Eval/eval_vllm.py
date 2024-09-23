@@ -7,15 +7,79 @@ from pathlib import Path
 import logging
 from tqdm import tqdm
 import argparse
+import ast
 
 import torch
 import transformers
+from transformers import AutoTokenizer
+from vllm import LLM, SamplingParams
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+class Inferencer:
+    def __init__(self, model_id, n_gpu, instruction):
+        self.model_id = model_id
+        self.llm = LLM(model=model_id,
+                    tokenizer=self.model_id,
+                    enable_prefix_caching=True,
+                    trust_remote_code=True,
+                    tensor_parallel_size=n_gpu,
+                    gpu_memory_utilization=0.9)
+        self.sampling_params = SamplingParams(temperature=0.0, max_tokens=16, seed=0)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        self.instruction = instruction
+    
+    def formulate_dialogs(self, doc_1, doc_2):
+        start_tok = '<|im_start|>'
+        end_tok = '<|im_end|>'
+        _instruction = self.instruction.replace('[Doc 1]', doc_1).replace('[Doc 2]', doc_2)
+        messages = _instruction.split(end_tok)[:-1]
+        messages = [{"role": m.strip('\n').split('\n')[0][12:], "content": '\n'.join(m.strip('\n').split('\n')[1:]).strip()} for m in messages]    
+        return messages
+    
+    def prepare_input(self, data, topk):
+        input_texts = []  # num_instance * num_perspectives * num_docs
+        for inst in tqdm(data):
+            # retrieving perspectives
+            perspectives = inst['perspectives']
+            
+            # retrieving docs
+            docs = inst['ctxs']
+                
+            # for every perspective, check if it is supported by the docs
+            for p in perspectives:
+                # pred_inst.append([])
+                for doc in docs[:topk]:
+                    if 'title' in doc:
+                        doc_text = doc['text'] + ' ' + doc['title']
+                    else:
+                        doc_text = doc['text']   
+                    
+                    input_texts.append(self.formulate_dialogs(doc_text, p)[1:])
+                    
+        return input_texts
+                        
+        
+    def inference(self, input_texts):
+        self.llm.generate(input_texts[0], self.sampling_params)
+    
+        outputs = self.llm.generate(input_texts, self.sampling_params, use_tqdm=True)
+        outputs = [output.outputs[0].text for output in outputs]
+        return outputs
+    
+    def parse_response(self, response):
+        if response[0] != '{':
+            response = response.strip().strip('\n').split('Answer:')[-1].split('The answer is')[-1].split('The answer is \"')[-1].split('The answer is:')[-1].split('Based on the information provided in the document, the answer is')[-1].split('Based on the information provided in the document, the answer is:\n')[-1].strip()
+            response = response.strip().lower()
+            _yes = (response[:3] == 'yes' or response[:4] == '(yes') or (response == 'y' or response == 'ye') or (response[-3:] == 'yes' or response[-4:] == 'yes.' or response[-5:] == 'yes\".')
+            _entail_or_true = (response[:6] == 'entail' or (response[:4] == 'true'))
+            return  _yes or _entail_or_true
+        else:
+            return ast.literal_eval(response)['Answer'].strip().lower() == 'yes'
 
 def mrecall(preds):
     mrecalls = []
@@ -49,25 +113,17 @@ def precision(preds):
         
     return sum(precisions) / float(len(precisions))
 
-def prepare_predictor_and_instruction(args):
+def prepare_predictor_and_inputs(args, data):
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    
     # read instructions
     instruction = open(args.instructions).read()
-
-    # load models     
-    assert args.model.lower().find(args.model_type) != -1
-    if args.model.find('llama') != -1: # llama models
-        model, configs = load_model(args, device, logger)
-        tokenizer = None
-    elif args.model != 'gpt4':         # t5 models
-        model, tokenizer = load_model(args, device, logger)
-        model.eval()
-    else:                              # gpt4 models
-        model = None
-        tokenizer = None
-
-    predictor = Prediction(args.model_type, model, tokenizer, device, args)
-    return instruction, predictor
+    inferencer = Inferencer(args.model, 1, instruction)
+    
+    input_texts = inferencer.prepare_input(data, args.topk)
+    input_texts = inferencer.tokenizer.apply_chat_template(input_texts, add_generation_prompt=True, tokenize=False)
+    return inferencer, input_texts
+    
 
 def main(args):
     random.seed(0)
@@ -105,18 +161,25 @@ def main(args):
         logger.info('running perspective detection: eval')
         assert Path(args.data).suffix == '.jsonl'
         
-        # prepare predictor 
-        instruction, predictor = prepare_predictor_and_instruction(args)
-        
         # prepare data
         data = read_jsonl(args.data)
         
-        # if args.data.find('arguana_generated') != -1:
-        #     data = data[:750]
-        # elif args.data.find('kialo') != -1:
-        #     data = data[:774]
-        # elif args.data.find('opinionqa') != -1:
-        #     data = data[:882]
+        if args.data.find('arguana_generated') != -1:
+            data = data[:750]
+        elif args.data.find('kialo') != -1:
+            data = data[:774]
+        elif args.data.find('opinionqa') != -1:
+            data = data[:882]
+        
+        # prepare predictor 
+        logger.info('loading model and data...')
+        inferencer, input_texts = prepare_predictor_and_inputs(args, data)
+        logger.info('finish loading model, start inference...')
+        outputs = inferencer.inference(input_texts)
+        # print(outputs)
+        outputs = [inferencer.parse_response(output) for output in outputs]
+        # print(outputs)
+        
         
         for inst in tqdm(data):
             pred_inst = []  # (num_perspectives, num_docs)
@@ -135,7 +198,7 @@ def main(args):
                     else:
                         doc_text = doc['text']   
                         
-                    pred = predictor.make_prediction(p, doc_text, instruction)  # whether each perspective is supported by doc_text
+                    pred = outputs.pop(0)
                     if args.model_type == 'gpt4':
                         if 'gpt4-preds' not in doc:
                             doc['gpt4-preds'] = []
@@ -155,27 +218,7 @@ def main(args):
             preds.append(pred_inst)    
         
         write_jsonl(args.output_file, data)
-    else:
-        """
-            Not running perspective detection module, only computing scores based on previously perspective detection results
-        """
-        assert (Path(args.data).name.find('.gpt4pred') != -1 or Path(args.data).name.find('.mistralpred') != -1)
-        logger.info("only computing scores based on previously perspective detection results")
-        data = read_jsonl(args.data)                   
-        
-        for inst in tqdm(data):
-            pred_inst = []  # (num_perspectives, num_docs)
-            perspectives = inst['perspectives']
-            docs = inst['ctxs']
-
-            pred_str = 'gpt4-preds' if Path(args.data).name.find('.gpt4pred') != -1 else 'mistral-preds'
-            for j, p in enumerate(perspectives):
-                pred_inst.append([])
-                for doc in docs[:args.topk]:
-                    pred = doc[pred_str][j]
-                    pred_inst[-1].append(pred)
-
-            preds.append(pred_inst)
+    
             
     # compute Precision & MRecall
     precision_score = precision(preds)

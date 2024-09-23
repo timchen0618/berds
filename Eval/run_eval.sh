@@ -1,5 +1,5 @@
 #!/bin/bash
-for corpus_and_retriever in sphere,bm25 
+for corpus_and_retriever in sphere,bm25
 do
     IFS=","
     set -- ${corpus_and_retriever}
@@ -11,10 +11,10 @@ do
     for DATA in "arguana_generated.jsonl" "kialo.jsonl" "opinionqa.jsonl" 
     do
         MODEL_SHORT="mistral" 
-        MODEL_NAME="timchen0618/Mistral_BERDS_evaluator"
+        MODEL_NAME="timchen0618/Mistral_BERDS_evaluator_full"
         OUTPUT="${ROOT}/${DATA}.${MODEL_SHORT}pred"
 
-        PYTHONPATH=.. torchrun --nproc_per_node 1 --master-port ${PORT} eval.py \
+        PYTHONPATH=.. python eval_vllm.py \
                 --data ${ROOT}/${DATA} \
                 --output_file ${OUTPUT}   \
                 --instructions instructions_chat.txt \
