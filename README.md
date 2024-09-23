@@ -97,6 +97,12 @@ PYTHONPATH=.. torchrun --nproc_per_node 1 --master-port [port] eval.py \
                 --model_type mistral \
                 --topk [k]
 ```
+If the `[path/to/evaluator/model]` is set to `timchen0618/Mistral_BERDS_evaluator_full`, the script will run the evaluator reported in the paper.   
+However, this will take 3~4 hours for a single dataset.  
+
+### vLLM Support
+We also support (vLLM)[https://github.com/vllm-project/vllm] inference to reduce evaluation time.  
+Simply replace `eval.py` in the commands with `eval_vllm.py`. All the arguments are the same.  
 
 See `run_eval.sh` for an example. 
 In `run_eval.sh`, the outputs are saved to files named `[dataset].jsonl`.  
