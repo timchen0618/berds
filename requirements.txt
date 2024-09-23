@@ -24,12 +24,13 @@ sentence-transformers==2.2.2
 sentencepiece==0.1.99
 spacy==3.5.3
 tokenizers==0.15.2
-torch==2.2.0
-torchaudio==2.2.0
-torchvision==0.17.0
+torch==2.2.1
+torchaudio==2.2.1
+torchvision==0.17.1
 tqdm==4.65.0
-transformers==4.38.1
+transformers==4.44.2
 triton==2.2.0
 trl==0.8.1
+vllm==0.4.1
 wandb==0.16.3
 wheel==0.41.2
